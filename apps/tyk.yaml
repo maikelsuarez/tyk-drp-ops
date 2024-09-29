@@ -145,7 +145,8 @@ spec:
     syncOptions:
       - CreateNamespace=true
   sources:
-    repoURL: https://github.com/tu-repositorio.git
+    repoURL: https://github.com/maikelsuarez/tyk-drp-ops.git
+    targetRevision: homelab
     path: base/tyk-conf-secret.yaml    
 ---
 apiVersion: argoproj.io/v1alpha1
