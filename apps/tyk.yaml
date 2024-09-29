@@ -2,6 +2,33 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
+  name: cert-manager
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://charts.jetstack.io
+    chart: cert-manager
+    targetRevision: v1.15.1
+    helm:
+      releaseName: cert-manager
+      values: |
+        installCRDs: true
+        prometheus:
+          enabled: false
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: cert-manager
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
   name: tyk-redis
   namespace: argocd
 spec:
@@ -70,7 +97,7 @@ spec:
         global:
           secrets:
             useSecretName: "tyk-conf"
-          adminUser: 
+          adminUser:
             email: "default@example.com"
             password: "topsecretpassword"
           storageType: "postgres"
@@ -108,6 +135,29 @@ spec:
             - prometheus
             prometheusPump:
               customMetrics: "[{\"name\": \"tyk_http_requests_total\",\"description\": \"Total of API requests\",\"metric_type\": \"counter\",\"labels\": [\"response_code\",\"api_name\",\"method\",\"api_key\",\"alias\",\"path\"]},{\"name\": \"tyk_http_latency\",\"description\": \"Latency of API requests\",\"metric_type\": \"histogram\",\"labels\": [\"type\",\"response_code\",\"api_name\",\"method\",\"api_key\",\"alias\",\"path\"]}]"
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: tyk
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: tyk-operator
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://helm.tyk.io/public/helm/charts
+    chart: tyk-operator
+    targetRevision: v0.18.0
+    helm:
+      releaseName: tyk-operator
   destination:
     server: https://kubernetes.default.svc
     namespace: tyk
