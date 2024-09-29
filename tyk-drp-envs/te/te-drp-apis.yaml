@@ -1,0 +1,42 @@
+---
+apiVersion: tyk.tyk.io/v1alpha1
+kind: ApiDefinition
+metadata:
+  name: te-httpbin
+spec:
+  name: te-httpbin
+  protocol: http
+  active: true
+  proxy:
+    target_url: http://httpbin-svc.tyk.svc:8000
+    listen_path: /te-httpbin
+    strip_listen_path: true
+  enable_detailed_recording: true
+  detailed_tracing: true
+  use_keyless: true
+---
+apiVersion: tyk.tyk.io/v1alpha1
+kind: ApiDefinition
+metadata:
+  name: te-httpbin-jwt
+spec:
+  name: te-httpbin-jwt
+  protocol: http
+  active: true
+  proxy:
+    target_url: http://httpbin-svc.tyk.svc:8000
+    listen_path: /te-httpbin-jwt
+    strip_listen_path: true
+  enable_detailed_recording: true
+  detailed_tracing: true
+  enable_jwt: true
+  jwt_signing_method: rsa
+  jwt_source: http://keycloak-service.tyk.svc:7000/realms/keycloak-oauth/protocol/openid-connect/certs
+  jwt_identity_base_field: sub
+  jwt_policy_field_name: pol
+  jwt_default_policies:
+    - tyk/no-op
+  jwt_scope_claim_name: group
+  jwt_scope_to_policy_mapping:
+    admins: tyk/httpbin-admins
+    developers: tyk/httpbin-developers

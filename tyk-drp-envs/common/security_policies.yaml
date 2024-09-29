@@ -1,0 +1,44 @@
+---
+apiVersion: tyk.tyk.io/v1alpha1
+kind: SecurityPolicy
+metadata:
+  name: httpbin-admins
+spec:
+  name: httpbin-admins
+  state: active
+  active: true
+  per: -1
+  quota_max: -1
+  quota_renewal_rate: -1
+  rate: -1
+  throttle_interval: -1
+  throttle_retry_limit: -1
+  access_rights_array:
+    - name: httpbin-jwt
+      namespace: tyk
+      versions:
+        - Default
+---
+apiVersion: tyk.tyk.io/v1alpha1
+kind: SecurityPolicy
+metadata:
+  name: httpbin-developers
+spec:
+  name: httpbin-developers
+  state: active
+  active: true
+  per: -1
+  quota_max: -1
+  quota_renewal_rate: -1
+  rate: -1
+  throttle_interval: -1
+  throttle_retry_limit: -1
+  access_rights_array:
+    - name: httpbin-jwt
+      namespace: tyk
+      versions:
+        - Default
+      allowed_urls:
+        - url: /xml
+          methods:
+            - GET

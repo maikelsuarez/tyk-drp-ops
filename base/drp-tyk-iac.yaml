@@ -2,14 +2,17 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: grafana-dashboards
+  name: tyk-stack
   namespace: argocd
 spec:
   project: default
   source:
     repoURL: https://github.com/maikelsuarez/tyk-drp-ops.git
-    targetRevision: HEAD
-    path: apps
+    path: apps/
+    targetRevision: homelab
+    directory:
+      recurse: true
+      jsonnet: {}
   destination:
     server: https://kubernetes.default.svc
     namespace: tyk
